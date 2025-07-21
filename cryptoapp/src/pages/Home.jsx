@@ -4,7 +4,7 @@ import { Line } from "react-chartjs-2";
 import axios from "axios";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale } from "chart.js";
 import "chartjs-adapter-date-fns";
-import "./Home.css";
+import "../style/Home.css";
 ChartJS.register( CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 const words = ["CryptoDashboard"];
 const typingSpeed = 150;
@@ -22,17 +22,20 @@ export default function Home() {
     if (!isDeleting && charIndex <= currentWord.length) {
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
+        console.log(setText);
         setCharIndex((prev) => prev + 1);
       }, typingSpeed);
     } else if (isDeleting && charIndex >= 0) {
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
+        console.log(setText);
         setCharIndex((prev) => prev - 1);
       }, deletingSpeed);
     } else if (!isDeleting && charIndex > currentWord.length) {
       timer = setTimeout(() => setIsDeleting(true), pauseTime);
     } else if (isDeleting && charIndex < 0) {
       setIsDeleting(false);
+      console.log(setText);
       setCharIndex(0);
     }
     return () => clearTimeout(timer);
@@ -43,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     let count = 0;
     const interval = setInterval(() => {
-      if (count <= 40) {
+      if (count < 100) {
         setCoinCount(count++);
       } else {
         clearInterval(interval);
@@ -60,13 +63,13 @@ export default function Home() {
         "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7"
       )
       .then((res) => {
-        const { prices } = res.data; // desestruturação aqui
+        const { prices } = res.data;
         setBtcData({
           labels: prices.map(([timestamp]) => new Date(timestamp)),
           datasets: [
             {
               label: "BTC Price (USD)",
-              data: prices.map(([, price]) => price), // desestruturação do array
+              data: prices.map(([, price]) => price), 
               borderColor: "#f2a900",
               backgroundColor: "rgba(242,169,0,0.1)",
               tension: 0.2,

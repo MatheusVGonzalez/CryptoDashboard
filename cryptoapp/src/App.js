@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        {/* Adicione o Register e outras rotas depois */}
+        
       </Routes>
     </BrowserRouter>
   );
