@@ -22,20 +22,20 @@ export default function Home() {
     if (!isDeleting && charIndex <= currentWord.length) {
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
-        console.log(setText);
+              console.log(currentWord.substring(0, charIndex));
         setCharIndex((prev) => prev + 1);
       }, typingSpeed);
     } else if (isDeleting && charIndex >= 0) {
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
-        console.log(setText);
+              console.log(currentWord.substring(0, charIndex));
         setCharIndex((prev) => prev - 1);
       }, deletingSpeed);
     } else if (!isDeleting && charIndex > currentWord.length) {
       timer = setTimeout(() => setIsDeleting(true), pauseTime);
     } else if (isDeleting && charIndex < 0) {
       setIsDeleting(false);
-      console.log(setText);
+      console.log(currentWord.substring(0, charIndex));
       setCharIndex(0);
     }
     return () => clearTimeout(timer);

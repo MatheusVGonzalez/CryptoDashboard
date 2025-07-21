@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import "../style/login.css";
+import axios from 'axios';  
 
 export default function Login() {
     const [nickName, setNickName] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Nickname:", nickName);
         console.log("Password:", password);
+    
+
+    try{
+        const res = await axios.post("http://localhost:3000/login", {
+            nickName : nickName,
+            password : password,
+        });
+        console.log("sucess");
+
+    }catch(err){    
+        console.log(err);
+    }
     };
 
     return (
