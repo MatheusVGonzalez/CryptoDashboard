@@ -18,9 +18,11 @@ export default function Login() {
             password : password,
         });
         console.log("sucess");
+        
 
     }catch(err){    
         console.log(err);
+        alert("Wrong Password or Email");
     }
     };
 

@@ -19,13 +19,13 @@ export default function Home() {
   useEffect(() => {
     let timer;
     const currentWord = words[wordIndex];
-    if (!isDeleting && charIndex <= currentWord.length) {
+    if (!isDeleting && charIndex <= currentWord.length) { 
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
               console.log(currentWord.substring(0, charIndex));
         setCharIndex((prev) => prev + 1);
       }, typingSpeed);
-    } else if (isDeleting && charIndex >= 0) {
+    } else if (isDeleting && charIndex >= 0) { 
       timer = setTimeout(() => {
         setText(currentWord.substring(0, charIndex));
               console.log(currentWord.substring(0, charIndex));
@@ -46,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     let count = 0;
     const interval = setInterval(() => {
-      if (count < 100) {
+      if (count < 50) {
         setCoinCount(count++);
       } else {
         clearInterval(interval);
