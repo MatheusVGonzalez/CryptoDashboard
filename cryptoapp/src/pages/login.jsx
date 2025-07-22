@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../style/login.css";
 import axios from 'axios';  
+import { Link } from "react-router-dom";
 
 export default function Login() {
     const [nickName, setNickName] = useState("");
@@ -18,7 +19,9 @@ export default function Login() {
             password : password,
         });
         console.log("sucess");
+        window.location.href = "/dashboard";    
         
+
 
     }catch(err){    
         console.log(err);
