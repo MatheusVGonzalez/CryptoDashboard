@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Line } from "react-chartjs-2";
 import "../style/Dashboard.css";
 import {
@@ -66,6 +67,39 @@ const chartOptions = {
 
 export default function CryptoDashboard() {
   const [selectedCrypto, setSelectedCrypto] = useState("BTC");
+  const [cryptoChartData, setCryptoChartData] = useState(null);
+  const [selectedDays, setSelectedDays] = useState(7);
+
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.coingecko.com/api/v3/coins/${selectedCrypto.toLowerCase()}/market_chart?vs_currency=usd&days=${selectedDays}`
+      );
+
+      const prices = res.data.prices;
+
+      setCryptoChartData({
+        labels: prices.map(([timestamp]) => new Date(timestamp).toLocaleDateString("en-US")),
+        datasets: [
+          {
+            label: `${selectedCrypto} Price (USD)`,
+            data: prices.map(([_, price]) => price),
+            borderColor: "#facc15",
+            backgroundColor: "rgba(250, 204, 21, 0.1)",
+            tension: 0.4,
+            fill: true,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Erro ao buscar dados do CoinGecko:", error);
+    }
+  };
+
+  fetchData();
+}, [selectedCrypto]);
+
 
   return (
     <div className="dashboard-container">
@@ -110,8 +144,14 @@ export default function CryptoDashboard() {
       <div className="chart-section">
         <div className="chart-title">Chart ({selectedCrypto})</div>
         <div className="chart-value">$38,252.02</div>
-        <Line data={generateChartData()} options={chartOptions} />
+        {cryptoChartData ? (
+          <Line data={cryptoChartData} options={chartOptions} />
+        ) : (
+          <p>Loading chart...</p>
+        )}
       </div>
+
+        console.log({selectedCrypto});
     </div>
   );
 }
