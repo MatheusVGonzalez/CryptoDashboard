@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 import "../style/Dashboard.css";
@@ -13,13 +13,6 @@ import {
 } from "chart.js";
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
-
-const cryptoData = [
-  { name: "Bitcoin", price: 52291, change: +0.25, symbol: "BTC", id: "bitcoin" },
-  { name: "Litecoin", price: 8291, change: +0.25, symbol: "LTC", id: "litecoin" },
-  { name: "Ethereum", price: 28291, change: +0.25, symbol: "ETH", id: "ethereum" },
-  { name: "Solana", price: 14291, change: -0.25, symbol: "SOL", id: "solana" },
-];
 
 const chartDataRaw = [
   { time: "20:00", value: 28000 },
@@ -69,6 +62,36 @@ export default function CryptoDashboard() {
   const [selectedCrypto, setSelectedCrypto] = useState("BTC");
   const [cryptoChartData, setCryptoChartData] = useState(null);
   const [selectedDays, setSelectedDays] = useState(7);
+  const [cryptoData, setCryptoData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const cardContainerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (cardContainerRef.current) {
+      cardContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (cardContainerRef.current) {
+      cardContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    }
+  };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setCryptoData((await axios.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1")).data);
+        console.log(cryptoData);
+      }  catch (error) {
+        console.error("Erro ao buscar dados do CoinGecko:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
   const fetchData = async () => {
@@ -101,6 +124,11 @@ export default function CryptoDashboard() {
 }, [selectedCrypto]);
 
 
+  // Filter coins based on search term
+  const filteredCoins = cryptoData.filter((coin) =>
+    coin.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="dashboard-container">
       <header className="header">
@@ -114,34 +142,38 @@ export default function CryptoDashboard() {
             type="text"
             className="search-input"
             placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </header>
 
       <h2 className="balance">$154,610.00</h2>
 
-      <div className="card-container">
-        {cryptoData.map((coin) => (
-          <div
-            key={coin.name}
-            className="card"
-            style={{
-              width: "240px",
-            }}
-            onClick={() => setSelectedCrypto(coin.id)}
-          >
-            <div className="coin-name">{coin.name}</div>
-            <div className="coin-price">${coin.price.toLocaleString()}</div>
+      <div className="carousel-wrapper">
+        <button className="carousel-button left" onClick={scrollLeft}>‹</button>
+        <div className="card-container" ref={cardContainerRef}>
+          {filteredCoins.map((coin) => (
             <div
-              className={`coin-change ${
-                coin.change >= 0 ? "positive" : "negative"
-              }`}
+              key={coin.name}
+              className="card"
+              onClick={() => setSelectedCrypto(coin.id)}
             >
-              {coin.change >= 0 ? "+" : ""}
-              {coin.change}%
+              <img src={coin.image} alt={coin.name} className="coin-image" />
+              <div className="coin-name">{coin.name}</div>
+              <div className="coin-price">${coin.current_price.toLocaleString()}</div>
+              <div
+                className={`coin-change ${
+                  coin.price_change_percentage_24h >= 0 ? "positive" : "negative"
+                }`}
+              >
+                {coin.change >= 0 ? "+" : ""}
+                {coin.price_change_percentage_24h}%
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <button className="carousel-button right" onClick={scrollRight}>›</button>
       </div>
 
       <div className="chart-section">
