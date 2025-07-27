@@ -15,10 +15,10 @@ import {
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const cryptoData = [
-  { name: "Bitcoin", price: 52291, change: +0.25, symbol: "BTC" },
-  { name: "Litecoin", price: 8291, change: +0.25, symbol: "LTC" },
-  { name: "Ethereum", price: 28291, change: +0.25, symbol: "ETH" },
-  { name: "Solana", price: 14291, change: -0.25, symbol: "SOL" },
+  { name: "Bitcoin", price: 52291, change: +0.25, symbol: "BTC", id: "bitcoin" },
+  { name: "Litecoin", price: 8291, change: +0.25, symbol: "LTC", id: "litecoin" },
+  { name: "Ethereum", price: 28291, change: +0.25, symbol: "ETH", id: "ethereum" },
+  { name: "Solana", price: 14291, change: -0.25, symbol: "SOL", id: "solana" },
 ];
 
 const chartDataRaw = [
@@ -125,7 +125,10 @@ export default function CryptoDashboard() {
           <div
             key={coin.name}
             className="card"
-            onClick={() => setSelectedCrypto(coin.symbol)}
+            style={{
+              width: "240px",
+            }}
+            onClick={() => setSelectedCrypto(coin.id)}
           >
             <div className="coin-name">{coin.name}</div>
             <div className="coin-price">${coin.price.toLocaleString()}</div>
@@ -151,7 +154,6 @@ export default function CryptoDashboard() {
         )}
       </div>
 
-        console.log({selectedCrypto});
     </div>
   );
 }
