@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/login.css";
 import axios from 'axios';  
 import { Link } from "react-router-dom";
-//tst
+
 export default function Login() {
     const [nickName, setNickName] = useState("");
     const [password, setPassword] = useState("");
