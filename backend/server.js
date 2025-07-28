@@ -18,8 +18,29 @@ app.post("/login", (req, res) => {
     if(userFind) {
         res.status(200).json({ message: "works" });
     }else{
-        res.status(404).json({ message: "erro" });
+        res.status(401).json({ message: "erro" });
     }
+});
+
+app.post("/register", (req, res) => {
+  const { nickName, password } = req.body;
+
+  if (!nickName || !password) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  const data = fs.readFileSync("./user.json");
+  const users = JSON.parse(data);
+
+  const userExists = users.find((u) => u.nickName === nickName);
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+
+  users.push({ nickName, password });
+
+  fs.writeFileSync("./user.json", JSON.stringify(users, null, 2));
+  return res.status(201).json({ message: "User registered" });
 });
 
 app.listen(rote, () => {

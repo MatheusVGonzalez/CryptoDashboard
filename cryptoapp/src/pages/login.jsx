@@ -11,22 +11,20 @@ export default function Login() {
         e.preventDefault();
         console.log("Nickname:", nickName);
         console.log("Password:", password);
-    
 
     try{
         const res = await axios.post("http://localhost:3000/login", {
             nickName : nickName,
             password : password,
         });
-        console.log("sucess");
-        window.location.href = "/dashboard";    
-        
-
-
-    }catch(err){    
-        console.log(err);
-        alert("Wrong Password or Email");
-    }
+      if (res.status === 200) {
+            console.log("Sucess");
+            window.location.href = "/dashboard";
+        }
+        } catch (err) {
+        console.error("Err:", err);
+        alert("Wrong Password / Email");
+        }
     };
 
     return (
@@ -57,6 +55,7 @@ export default function Login() {
                                 placeholder="Password"
                             />
                         </div>
+                        <button type="button" className="btn btn-primary" onClick={() => window.history.back()}>Back</button>
                         <button type="submit" className="btn btn-primary">Login</button>
                     </form>
                 </div>
