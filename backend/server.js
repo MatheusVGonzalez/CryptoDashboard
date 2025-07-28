@@ -4,6 +4,21 @@ const cors= require("cors");
 const { error } = require("console");
 const app = express();
 const rote = 3000;
+const axios = require("axios");
+
+app.get("/api/bitcoin-data", async (req, res) => {
+  try {
+    const response = await axios.get("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart", {
+      params: {
+        vs_currency: "usd",
+        days: 7,
+      }
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ message: "err", error: err.message });
+  }
+});
 
 app.use(cors());
 app.use(express.json());

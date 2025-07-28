@@ -64,6 +64,7 @@ export default function CryptoDashboard() {
   const [selectedDays, setSelectedDays] = useState(7);
   const [cryptoData, setCryptoData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedCoin = cryptoData.find((coin) => coin.id === selectedCrypto);
 
   const cardContainerRef = useRef(null);
 
@@ -129,6 +130,7 @@ export default function CryptoDashboard() {
     coin.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
   return (
     <div className="dashboard-container">
       <header className="header">
@@ -148,7 +150,7 @@ export default function CryptoDashboard() {
         </div>
       </header>
 
-      <h2 className="balance">$154,610.00</h2>
+      <h2 className="balance">$0</h2>
 
       <div className="carousel-wrapper">
         <button className="carousel-button left" onClick={scrollLeft}>‹</button>
@@ -178,11 +180,16 @@ export default function CryptoDashboard() {
 
       <div className="chart-section">
         <div className="chart-title">Chart ({selectedCrypto})</div>
-        <div className="chart-value">$38,252.02</div>
+      {selectedCoin && (
+        <div className="chart-value">
+          ${selectedCoin.current_price.toLocaleString()} USD
+        </div>
+      )}
+
         {cryptoChartData ? (
           <Line data={cryptoChartData} options={chartOptions} />
         ) : (
-          <p>Loading chart...</p>
+          <p>Select some CrpytoCoin</p>
         )}
       </div>
 
