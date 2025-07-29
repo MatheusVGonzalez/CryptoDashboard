@@ -229,7 +229,7 @@ export default function CryptoDashboard() {
             />
             <button onClick={() => {
               setBalance(balance + Number(paymentAmount));
-              git(false);
+              setShowPaymentModal(false);
               setPaymentAmount("");
             }}>Add Funds</button>
             <button onClick={() => setShowPaymentModal(false)}>Cancel</button>
