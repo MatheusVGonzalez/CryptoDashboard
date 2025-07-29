@@ -86,6 +86,19 @@ export default function CryptoDashboard() {
     }
   };
 
+const [user, setUser] = useState(null);
+
+useEffect(() => {
+  const storedUser = localStorage.getItem("loggedUser");
+  if (!storedUser) {
+    navigate("/login");
+  } else {
+    setUser(storedUser);
+    console.log(user);  
+  }
+}, []);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,8 +114,16 @@ export default function CryptoDashboard() {
 
   }, []);
 
-  useEffect(() => {
+const chartCache = {};
+
+useEffect(() => {
   const fetchData = async () => {
+    const cacheKey = `${selectedCrypto}-${selectedDays}`;
+    if (chartCache[cacheKey]) {
+      setCryptoChartData(chartCache[cacheKey]); //use the cache to handle the limit api 
+      return;
+    }
+
     try {
       const res = await axios.get(
         `https://api.coingecko.com/api/v3/coins/${selectedCrypto.toLowerCase()}/market_chart?vs_currency=usd&days=${selectedDays}`
@@ -110,8 +131,10 @@ export default function CryptoDashboard() {
 
       const prices = res.data.prices;
 
-      setCryptoChartData({
-        labels: prices.map(([timestamp]) => new Date(timestamp).toLocaleDateString("en-US")),
+      const chartData = {
+        labels: prices.map(([timestamp]) =>
+          new Date(timestamp).toLocaleDateString("en-US")
+        ),
         datasets: [
           {
             label: `${selectedCrypto} Price (USD)`,
@@ -122,7 +145,11 @@ export default function CryptoDashboard() {
             fill: true,
           },
         ],
-      });
+      };
+
+      chartCache[cacheKey] = chartData;
+      console.log(chartCache);
+      setCryptoChartData(chartData);
     } catch (error) {
       console.error("Erro ao buscar dados do CoinGecko:", error);
     }
@@ -144,7 +171,7 @@ export default function CryptoDashboard() {
         <h1 className="header-title">Dashboard</h1>
         <div className="header-buttons">
           <button className="payment-button" onClick={() => setShowPaymentModal(true)}>Pay</button>
-          <button className="logout-button" onClick={() => navigate("/login")}>Logout</button>
+          <button className="logout-button" onClick={() => {localStorage.removeItem("loggedUser"); navigate("/login");}}>Logout</button>
         </div>
       </header>
       <div className="search-bar">

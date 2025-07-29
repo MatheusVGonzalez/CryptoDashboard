@@ -19,6 +19,7 @@ export default function Login() {
             });
             if (res.status === 200) {
                 console.log("Sucess");
+                localStorage.setItem("loggedUser", nickName);
                 window.location.href = "/dashboard";
             }
         } catch (err) {
