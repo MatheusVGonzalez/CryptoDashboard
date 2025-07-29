@@ -123,7 +123,7 @@ export default function CryptoDashboard() {
   };
 
   fetchData();
-}, [selectedCrypto]);
+}, [selectedCrypto, selectedDays]);
 
 
   // Filter coins based on search term
@@ -184,6 +184,18 @@ export default function CryptoDashboard() {
       {selectedCoin && (
         <div className="chart-value">
           ${selectedCoin.current_price.toLocaleString()} USD
+      <div className="day-selector">
+        {[1, 7, 14, 30, 90].map((day) => (
+          <button
+            key={day}
+            className={`day-button ${selectedDays === day ? "active" : ""}`}
+            onClick={() => setSelectedDays(day)}
+          >
+            {day}d
+          </button>
+        ))}
+      </div>
+
         </div>
       )}
 

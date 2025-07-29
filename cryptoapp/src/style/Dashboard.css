@@ -130,6 +130,39 @@
   font-weight: bold;
   margin-bottom: 1rem;
 }
+.day-button {
+  background-color: #1f1f1f;
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+.day-button:hover {
+  background-color: #2a2a2a;
+  border-color: #facc15; /* amarelo como o título */
+}
+
+.day-button.active {
+  background-color: #facc15;
+  color: #000;
+  font-weight: bold;
+}
+
+.day-selector {
+  background-color: #141414;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
 .carousel-wrapper {
   position: relative;
 }
