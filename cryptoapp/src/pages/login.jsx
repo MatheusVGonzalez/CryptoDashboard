@@ -13,7 +13,7 @@ export default function Login() {
         console.log("Password:", password);
 
     try{
-        const res = await axios.post("http://localhost:3000/login", {
+        const res = await axios.post("http://127.0.0.1:3000/login", {
             nickName : nickName,
             password : password,
         });
