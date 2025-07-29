@@ -12,18 +12,18 @@ export default function Login() {
         console.log("Nickname:", nickName);
         console.log("Password:", password);
 
-    try{
-        const res = await axios.post("http://127.0.0.1:3000/login", {
-            nickName : nickName,
-            password : password,
-        });
-      if (res.status === 200) {
-            console.log("Sucess");
-            window.location.href = "/dashboard";
-        }
+        try{
+            const res = await axios.post("http://127.0.0.1:3000/login", {
+                nickName : nickName,
+                password : password,
+            });
+            if (res.status === 200) {
+                console.log("Sucess");
+                window.location.href = "/dashboard";
+            }
         } catch (err) {
-        console.error("Err:", err);
-        alert("Wrong Password / Email");
+            console.error("Err:", err);
+            alert("Wrong Password / Email");
         }
     };
 

@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -64,9 +65,14 @@ export default function CryptoDashboard() {
   const [selectedDays, setSelectedDays] = useState(7);
   const [cryptoData, setCryptoData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [paymentAmount, setPaymentAmount] = useState("");
   const selectedCoin = cryptoData.find((coin) => coin.id === selectedCrypto);
 
   const cardContainerRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const scrollLeft = () => {
     if (cardContainerRef.current) {
@@ -136,22 +142,26 @@ export default function CryptoDashboard() {
     <div className="dashboard-container">
       <header className="header">
         <h1 className="header-title">Dashboard</h1>
-        <div className="search-bar">
-          <span className="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 48 48">
-                <path fill="currentColor" d="M46.8 42.798 36.134 32.135a19.7 19.7 0 0 0 3.949-11.853C40.084 9.363 31.2.48 20.282.48S.48 9.363.48 20.282s8.883 19.802 19.802 19.802a19.7 19.7 0 0 0 11.853-3.949L42.798 46.8a2.834 2.834 0 0 0 4.001-4M6.137 20.282a14.144 14.144 0 1 1 14.144 14.144A14.16 14.16 0 0 1 6.138 20.282"></path>
-            </svg></span>
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="header-buttons">
+          <button className="payment-button" onClick={() => setShowPaymentModal(true)}>Pay</button>
+          <button className="logout-button" onClick={() => navigate("/login")}>Logout</button>
         </div>
       </header>
+      <div className="search-bar">
+        <span className="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 48 48">
+              <path fill="currentColor" d="M46.8 42.798 36.134 32.135a19.7 19.7 0 0 0 3.949-11.853C40.084 9.363 31.2.48 20.282.48S.48 9.363.48 20.282s8.883 19.802 19.802 19.802a19.7 19.7 0 0 0 11.853-3.949L42.798 46.8a2.834 2.834 0 0 0 4.001-4M6.137 20.282a14.144 14.144 0 1 1 14.144 14.144A14.16 14.16 0 0 1 6.138 20.282"></path>
+          </svg></span>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-      <h2 className="balance">$0</h2>
+      <h2 className="balance">${balance}</h2>
 
       <div className="carousel-wrapper">
         <button className="carousel-button left" onClick={scrollLeft}>‹</button>
@@ -193,6 +203,27 @@ export default function CryptoDashboard() {
           <p>Select some CrpytoCoin</p>
         )}
       </div>
+
+      {showPaymentModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Select Payment Amount</h2>
+            <input
+              type="number"
+              min="0"
+              placeholder="Enter amount"
+              value={paymentAmount}
+              onChange={(e) => setPaymentAmount(e.target.value)}
+            />
+            <button onClick={() => {
+              setBalance(balance + Number(paymentAmount));
+              setShowPaymentModal(false);
+              setPaymentAmount("");
+            }}>Add Funds</button>
+            <button onClick={() => setShowPaymentModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
