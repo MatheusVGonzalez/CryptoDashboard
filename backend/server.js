@@ -3,7 +3,7 @@
   const cors= require("cors");
   const { error } = require("console");
   const app = express();
-  const rote = 3000;
+  const rote = 5000;
   const axios = require("axios");
 
   app.get("/api/bitcoin-data", async (req, res) => {
@@ -36,6 +36,35 @@
           res.status(401).json({ message: "erro" });
       }
   });
+
+  app.get("/user-balance/:nickName", (req, res) => {
+  const { nickName } = req.params;
+  const data = fs.readFileSync("./user.json");
+  const users = JSON.parse(data);
+  const user = users.find((u) => u.nickName === nickName);
+  if (user) {
+    res.json({ balance: user.balance || 0 });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
+app.post("/update-balance", (req, res) => {
+  const { nickName, balance } = req.body;
+
+  const data = fs.readFileSync("./user.json");
+  const users = JSON.parse(data);
+
+  const userIndex = users.findIndex((u) => u.nickName === nickName);
+  if (userIndex !== -1) {
+    users[userIndex].balance = balance;
+    fs.writeFileSync("./user.json", JSON.stringify(users, null, 2));
+    res.status(200).json({ message: "Balance updated" });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
 
   app.post("/register", (req, res) => {
     const { nickName, password } = req.body;

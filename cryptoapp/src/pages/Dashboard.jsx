@@ -94,9 +94,17 @@ useEffect(() => {
     navigate("/login");
   } else {
     setUser(storedUser);
-    console.log(user);  
+
+    axios.get(`http://127.0.0.1:5000/user-balance/${storedUser}`)
+      .then((res) => {
+        setBalance(res.data.balance);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar saldo:", err);
+      });
   }
 }, []);
+
 
 
 
@@ -171,7 +179,7 @@ useEffect(() => {
         <h1 className="header-title">Dashboard</h1>
         <div className="header-buttons">
           <button className="payment-button" onClick={() => setShowPaymentModal(true)}>Pay</button>
-          <button className="logout-button" onClick={() => {localStorage.removeItem("loggedUser"); navigate("/login");}}>Logout</button>
+          <button className="logout-button" onClick={() => {localStorage.removeItem("loggedUser"); navigate("/");}}>Logout</button>
         </div>
       </header>
       <div className="search-bar">
@@ -255,10 +263,23 @@ useEffect(() => {
               onChange={(e) => setPaymentAmount(e.target.value)}
             />
             <button onClick={() => {
-              setBalance(balance + Number(paymentAmount));
+              const newBalance = balance + Number(paymentAmount);
+              setBalance(newBalance);
               setShowPaymentModal(false);
               setPaymentAmount("");
-            }}>Add Funds</button>
+
+              axios.post("http://127.0.0.1:5000/update-balance", {
+                nickName: user,
+                balance: newBalance,
+              }).then(() => {
+                console.log("Saldo salvo com sucesso.");
+              }).catch((err) => {
+                console.error("Erro ao salvar saldo:", err);
+              });
+            }}>
+              Add Funds
+            </button>
+
             <button onClick={() => setShowPaymentModal(false)}>Cancel</button>
           </div>
         </div>
