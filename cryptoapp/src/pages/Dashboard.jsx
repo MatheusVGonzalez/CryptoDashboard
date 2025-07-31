@@ -16,12 +16,12 @@ import { useNavigate } from "react-router-dom";
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const chartDataRaw = [
-  { time: "20:00", value: 28000 },
-  { time: "20:10", value: 39000 },
-  { time: "20:20", value: 32000 },
-  { time: "20:30", value: 41000 },
-  { time: "20:40", value: 47000 },
-  { time: "20:50", value: 48000 },
+  { time: "20:00", value: 28670 },
+  { time: "20:10", value: 39063 },
+  { time: "20:20", value: 32054 },
+  { time: "20:30", value: 41023 },
+  { time: "20:40", value: 47064 },
+  { time: "20:50", value: 48012 },
 ];
 
 const generateChartData = () => ({
@@ -69,11 +69,8 @@ export default function CryptoDashboard() {
   const [balance, setBalance] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState("");
   const selectedCoin = cryptoData.find((coin) => coin.id === selectedCrypto);
-
   const cardContainerRef = useRef(null);
-
   const navigate = useNavigate();
-
   const scrollLeft = () => {
     if (cardContainerRef.current) {
       cardContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -85,9 +82,7 @@ export default function CryptoDashboard() {
       cardContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
-
 const [user, setUser] = useState(null);
-
 useEffect(() => {
   const storedUser = localStorage.getItem("loggedUser");
   if (!storedUser) {
@@ -100,13 +95,10 @@ useEffect(() => {
         setBalance(res.data.balance);
       })
       .catch((err) => {
-        console.error("Erro ao buscar saldo:", err);
+        console.error("Err:", err);
       });
   }
 }, []);
-
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,16 +106,13 @@ useEffect(() => {
         setCryptoData((await axios.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1")).data);
         console.log(cryptoData);
       }  catch (error) {
-        console.error("Erro ao buscar dados do CoinGecko:", error);
+        console.error("err:", error);
       }
     }
-
     fetchData();
-
   }, []);
 
 const chartCache = {};
-
 useEffect(() => {
   const fetchData = async () => {
     const cacheKey = `${selectedCrypto}-${selectedDays}`;
@@ -131,14 +120,11 @@ useEffect(() => {
       setCryptoChartData(chartCache[cacheKey]); //use the cache to handle the limit api 
       return;
     }
-
     try {
       const res = await axios.get(
         `https://api.coingecko.com/api/v3/coins/${selectedCrypto.toLowerCase()}/market_chart?vs_currency=usd&days=${selectedDays}`
       );
-
       const prices = res.data.prices;
-
       const chartData = {
         labels: prices.map(([timestamp]) =>
           new Date(timestamp).toLocaleDateString("en-US")
@@ -166,13 +152,10 @@ useEffect(() => {
   fetchData();
 }, [selectedCrypto, selectedDays]);
 
-
   // Filter coins based on search term
   const filteredCoins = cryptoData.filter((coin) =>
     coin.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-
   return (
     <div className="dashboard-container">
       <header className="header">
@@ -195,9 +178,7 @@ useEffect(() => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <h2 className="balance">${balance}</h2>
-
       <div className="carousel-wrapper">
         <button className="carousel-button left" onClick={scrollLeft}>‹</button>
         <div className="card-container" ref={cardContainerRef}>
@@ -250,7 +231,6 @@ useEffect(() => {
           <p>Select some CrpytoCoin</p>
         )}
       </div>
-
       {showPaymentModal && (
         <div className="modal-overlay">
           <div className="modal">
@@ -279,7 +259,6 @@ useEffect(() => {
             }}>
               Add Funds
             </button>
-
             <button onClick={() => setShowPaymentModal(false)}>Cancel</button>
           </div>
         </div>

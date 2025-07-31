@@ -19,7 +19,6 @@ export default function Register() {
       alert("This user already exist");
     }
   };
-
   return (
     <div className="login-container">
       <div className="card mt-5 w-50">

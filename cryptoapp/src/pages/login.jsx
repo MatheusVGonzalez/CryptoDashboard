@@ -6,12 +6,8 @@ import { Link } from "react-router-dom";
 export default function Login() {
     const [nickName, setNickName] = useState("");
     const [password, setPassword] = useState("");
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Nickname:", nickName);
-        console.log("Password:", password);
-
         try{
             const res = await axios.post("http://127.0.0.1:5000/login", {
                 nickName : nickName,
@@ -27,7 +23,6 @@ export default function Login() {
             alert("Wrong Password / Email");
         }
     };
-
     return (
         <div className="login-container">
             <div className="card mt-5 w-50">
