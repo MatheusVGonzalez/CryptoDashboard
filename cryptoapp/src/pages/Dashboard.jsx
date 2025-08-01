@@ -71,6 +71,8 @@ export default function CryptoDashboard() {
   const selectedCoin = cryptoData.find((coin) => coin.id === selectedCrypto);
   const cardContainerRef = useRef(null);
   const navigate = useNavigate();
+  const widgetRef = useRef(null);
+
   const scrollLeft = () => {
     if (cardContainerRef.current) {
       cardContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -90,7 +92,7 @@ useEffect(() => {
   } else {
     setUser(storedUser);
 
-    axios.get(`http://127.0.0.1:5000/user-balance/${storedUser}`)
+    axios.get(`http://127.0.0.1:3000/user-balance/${storedUser}`)
       .then((res) => {
         setBalance(res.data.balance);
       })
@@ -156,6 +158,37 @@ useEffect(() => {
   const filteredCoins = cryptoData.filter((coin) =>
     coin.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+
+  useEffect(() => {
+    if (widgetRef.current) {
+      widgetRef.current.innerHTML = "";
+    }
+
+    const widget = document.createElement("a");
+    widget.href = "https://cryptopanic.com/";
+    widget.target = "_blank";
+    widget.setAttribute("data-news_feed", "recent");
+    widget.setAttribute("data-currencies", selectedCrypto.toUpperCase());
+    widget.setAttribute("data-bg_color", "#2f2d2dff");
+    widget.setAttribute("data-text_color", "#333333");
+    widget.setAttribute("data-link_color", "#0091C2");
+    widget.setAttribute("data-header_bg_color", "#30343B");
+    widget.setAttribute("data-header_text_color", "#FFFFFF");
+    widget.className = "CryptoPanicWidget";
+    widget.innerText = "Latest News";
+
+    if (widgetRef.current) {
+      widgetRef.current.appendChild(widget);
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://static.cryptopanic.com/static/js/widgets.min.js";
+    script.async = true;
+    widgetRef.current.appendChild(script);
+  }, [selectedCrypto]);
+
+
   return (
     <div className="dashboard-container">
       <header className="header">
@@ -248,13 +281,13 @@ useEffect(() => {
               setShowPaymentModal(false);
               setPaymentAmount("");
 
-              axios.post("http://127.0.0.1:5000/update-balance", {
+              axios.post("http://127.0.0.1:3000/update-balance", {
                 nickName: user,
                 balance: newBalance,
               }).then(() => {
-                console.log("Saldo salvo com sucesso.");
+                console.log("Balance Successfully.");
               }).catch((err) => {
-                console.error("Erro ao salvar saldo:", err);
+                console.error("Error:", err);
               });
             }}>
               Add Funds
@@ -264,6 +297,7 @@ useEffect(() => {
         </div>
       )}
 
+      <div ref={widgetRef} className="cryptopanic-widget-container" />
     </div>
   );
 }

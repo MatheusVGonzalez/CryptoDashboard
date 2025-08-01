@@ -258,3 +258,10 @@
 .modal button:hover {
   background-color: #eab308;
 }
+
+
+.cryptopanic-widget-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}

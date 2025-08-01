@@ -9,7 +9,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const res = await axios.post("http://127.0.0.1:5000/login", {
+            const res = await axios.post("http://127.0.0.1:3000/login", {
                 nickName : nickName,
                 password : password,
             });
